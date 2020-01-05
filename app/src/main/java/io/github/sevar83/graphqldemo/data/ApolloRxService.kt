@@ -26,7 +26,7 @@ class ApolloRxService(
 
     override fun fetchRepositories() {
         val repositoriesQuery = GithubRepositoriesQuery(
-            repositoriesCount = 50,
+            repositoriesCount = DEFAULT_PAGE_SIZE,
             orderBy = RepositoryOrderField.UPDATED_AT,
             orderDirection = OrderDirection.DESC
         )

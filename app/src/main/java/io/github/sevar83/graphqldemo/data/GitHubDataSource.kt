@@ -35,4 +35,8 @@ abstract class GitHubDataSource(protected val apolloClient: ApolloClient) {
             ?.mapNotNull { node -> node?.fragments?.repositoryFragment }
             ?: emptyList()
     }
+
+    companion object {
+        const val DEFAULT_PAGE_SIZE = 10
+    }
 }
