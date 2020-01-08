@@ -1,50 +1,42 @@
 package io.github.sevar83.graphqldemo.ui.repositories
 
-import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
-import io.github.sevar83.graphqldemo.R
+import androidx.paging.PagedListAdapter
+import androidx.recyclerview.widget.DiffUtil
 import io.github.sevar83.graphqldemo.fragment.RepositoryFragment
-import kotlinx.android.synthetic.main.item_repository.view.*
-import java.util.*
 
-class RepositoriesAdapter(private val onClick: (RepositoryFragment) -> Unit) :
-    RecyclerView.Adapter<RepositoriesAdapter.ViewHolder>() {
+class RepositoriesAdapter(private val onClick: ((RepositoryFragment) -> Unit)?) :
+    PagedListAdapter<RepositoryFragment, RepositoryViewHolder>(diffCallback) {
 
-    private var data: List<RepositoryFragment> = ArrayList()
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.item_repository, parent, false)
-        )
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RepositoryViewHolder {
+        return RepositoryViewHolder(parent)
     }
 
-    override fun getItemCount() = data.size
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(data[position], onClick)
+    override fun onBindViewHolder(holder: RepositoryViewHolder, position: Int) {
+        return holder.bind(getItem(position), onClick)
     }
 
-    fun setItems(data: List<RepositoryFragment>) {
-        this.data = data
-        notifyDataSetChanged()
-    }
+    companion object {
+        /**
+         * This diff callback informs the [PagedListAdapter] how to compute list differences when new
+         * PagedLists arrive.
+         *
+         * When you add a [RepositoryFragment], the [PagedListAdapter] uses diffCallback to
+         * detect there's only a single item difference from before, so it only needs to animate and
+         * rebind a single view.
+         *
+         * @see [DiffUtil]
+         */
+        private val diffCallback = object : DiffUtil.ItemCallback<RepositoryFragment>() {
+            override fun areItemsTheSame(oldItem: RepositoryFragment, newItem: RepositoryFragment): Boolean =
+                oldItem.id == newItem.id
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(repositoryFragment: RepositoryFragment, onClick: (RepositoryFragment) -> Unit) {
-            itemView.run {
-                tvRepositoryName.text = repositoryFragment.name
-                if (repositoryFragment.description == null) {
-                    tvRepositoryDescription.visibility = View.GONE
-                } else {
-                    tvRepositoryDescription.text = repositoryFragment.description
-                }
-
-                rootLayout.setOnClickListener {
-                    onClick(repositoryFragment)
-                }
-            }
+            /**
+             * Note that in kotlin, == checking on data classes compares all contents, but in Java,
+             * typically you'll implement Object#equals, and use it to compare object contents.
+             */
+            override fun areContentsTheSame(oldItem: RepositoryFragment, newItem: RepositoryFragment): Boolean =
+                oldItem == newItem
         }
     }
 }

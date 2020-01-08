@@ -1,6 +1,7 @@
 package io.github.sevar83.graphqldemo
 
 import android.app.Application
+import androidx.paging.DataSource
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.ResponseField
@@ -8,10 +9,8 @@ import com.apollographql.apollo.cache.normalized.CacheKey
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo.cache.normalized.sql.ApolloSqlHelper
 import com.apollographql.apollo.cache.normalized.sql.SqlNormalizedCacheFactory
-import io.github.sevar83.graphqldemo.data.ApolloCallbackService
-import io.github.sevar83.graphqldemo.data.GitHubDataSource
-import io.github.sevar83.graphqldemo.data.ApolloCoroutinesService
-import io.github.sevar83.graphqldemo.data.ApolloRxService
+import io.github.sevar83.graphqldemo.data.RepositoriesPagedDataSource
+import io.github.sevar83.graphqldemo.fragment.RepositoryFragment
 import okhttp3.OkHttpClient
 
 @Suppress("unused")
@@ -57,24 +56,21 @@ class KotlinSampleApp : Application() {
             .build()
     }
 
-    /**
-     * Builds an implementation of [GitHubDataSource]. To configure which one is returned, just comment out the appropriate
-     * lines.
-     *
-     * @param[serviceTypes] Modify the type of service we use, if we want. To use the same thing across the board simply update
-     * it here.
-     */
-    fun getDataSource(serviceTypes: ServiceTypes = ServiceTypes.CALLBACK): GitHubDataSource {
-        return when (serviceTypes) {
-            ServiceTypes.CALLBACK -> ApolloCallbackService(apolloClient)
-            ServiceTypes.RX_JAVA -> ApolloRxService(apolloClient)
-            ServiceTypes.COROUTINES -> ApolloCoroutinesService(apolloClient)
-        }
+    fun getRepositoriesDataSourceFactory(): DataSource.Factory<String, RepositoryFragment> {
+        return RepositoriesPagedDataSource.Factory(apolloClient)
     }
 
-    enum class ServiceTypes {
-        CALLBACK,
-        RX_JAVA,
-        COROUTINES
+    /*fun getRepositoriesDataSource(): RepositoriesPagedDataSource {
+        return RepositoriesPagedDataSource(apolloClient)
     }
+
+    fun getRepositoryDetailDataSource(): RepositoryDetailDataSource {
+        return RepositoryDetailDataSource(
+            apolloClient
+        )
+    }
+
+    fun getCommitsDataSource(): CommitsDataSource {
+        return CommitsDataSource(apolloClient)
+    }*/
 }

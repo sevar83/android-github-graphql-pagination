@@ -2,28 +2,21 @@ package io.github.sevar83.graphqldemo.ui.commits
 
 import android.content.Context
 import android.content.Intent
-import android.os.Bundle
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import io.github.sevar83.graphqldemo.KotlinSampleApp
-import io.github.sevar83.graphqldemo.data.GitHubDataSource
 import io.github.sevar83.graphqldemo.GithubRepositoryCommitsQuery
-import io.github.sevar83.graphqldemo.R
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_commits.*
 
 class CommitsActivity : AppCompatActivity() {
     private val adapter = CommitsAdapter()
     private val compositeDisposable = CompositeDisposable()
-    private val dataSource: GitHubDataSource by lazy {
+    /*private val dataSource: GitHubDataSource by lazy {
         (application as KotlinSampleApp).getDataSource()
-    }
+    }*/
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    /*override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_commits)
 
@@ -58,7 +51,7 @@ class CommitsActivity : AppCompatActivity() {
         super.onDestroy()
         compositeDisposable.dispose()
         dataSource.cancelFetching()
-    }
+    }*/
 
     private fun handleCommits(commits: List<GithubRepositoryCommitsQuery.Edge>) {
         progressBar.visibility = GONE

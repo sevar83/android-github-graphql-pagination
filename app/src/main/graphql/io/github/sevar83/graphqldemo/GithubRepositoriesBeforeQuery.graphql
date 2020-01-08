@@ -1,0 +1,13 @@
+query GithubRepositoriesBefore($repositoriesCount: Int!, $before: String, $orderBy: RepositoryOrderField!, $orderDirection: OrderDirection!) {
+  viewer {
+    repositories(last: $repositoriesCount, before: $before, orderBy: {field: $orderBy, direction: $orderDirection}, ownerAffiliations: [OWNER]) {
+      nodes {
+        ...RepositoryFragment
+      }
+      pageInfo {
+        startCursor
+        hasPreviousPage
+      }
+    }
+  }
+}
